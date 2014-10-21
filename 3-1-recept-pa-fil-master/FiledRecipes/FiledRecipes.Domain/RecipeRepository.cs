@@ -129,16 +129,34 @@ namespace FiledRecipes.Domain
         }
         public void Load()
         {
-            List<IRecipe> recepies = new List<IRecipe>();
+            
+            List<IRecipe> recipes = new List<IRecipe>();
+
+            RecipeReadStatus readStatus = new RecipeReadStatus();
 
             using (StreamReader reader = new StreamReader(_path))
             {
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
-                    
+                    if (line == SectionRecipe)
+                    {
+                        readStatus = RecipeReadStatus.New;
+                    }
+                    else if (line == SectionIngredients)
+                    {
+                        readStatus = RecipeReadStatus.Ingredient;
+                    }
+                    else if (line == SectionInstructions)
+                    {
+                        readStatus = RecipeReadStatus.Instruction;
+                    }
                 }
             }
+        }
+        public void Save()
+        {
+
         }
     }
 }
