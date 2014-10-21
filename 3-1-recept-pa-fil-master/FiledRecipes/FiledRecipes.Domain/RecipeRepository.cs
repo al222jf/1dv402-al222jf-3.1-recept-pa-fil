@@ -127,5 +127,18 @@ namespace FiledRecipes.Domain
                 handler(this, e);
             }
         }
+        public void Load()
+        {
+            List<IRecipe> recepies = new List<IRecipe>();
+
+            using (StreamReader reader = new StreamReader(_path))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    
+                }
+            }
+        }
     }
 }
