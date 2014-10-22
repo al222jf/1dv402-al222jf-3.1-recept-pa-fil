@@ -129,11 +129,11 @@ namespace FiledRecipes.Domain
         }
         public void Load()
         {
-            Recipe allRecepies = null;
+            Recipe recipe = null;
 
             List<IRecipe> recipes = new List<IRecipe>();
 
-            RecipeReadStatus readStatus = new RecipeReadStatus();
+            RecipeReadStatus readStatus = RecipeReadStatus.Indefinite;
 
             using (StreamReader reader = new StreamReader(_path))
             {
@@ -156,14 +156,14 @@ namespace FiledRecipes.Domain
                     {
                         if (readStatus == RecipeReadStatus.New)
                         {
-                            allRecepies = new Recipe(line);
-                            recipes.Add(allRecepies);
+                            recipe = new Recipe(line);
+                            recipes.Add(recipe);
                         }
                         else if (readStatus == RecipeReadStatus.Ingredient)
                         {
-                            string[] ingredients = line.Split(new string[] { "," }, StringSplitOptions.None);
+                            string[] ingredients = line.Split(';');
 
-                            if (ingredients.Length % 3 != 0)
+                            if (ingredients.Length != 3)
                             {
                                 throw new FileFormatException();
                             }
@@ -172,19 +172,27 @@ namespace FiledRecipes.Domain
                             ingredient.Amount = ingredients[0];
                             ingredient.Measure = ingredients[1];
                             ingredient.Name = ingredients[2];
+                            recipe.Add(ingredient);
                             
                         }
                         else if (readStatus == RecipeReadStatus.Instruction)
                         {
-                            //allRecepies.Add(line);
+                            recipe.Add(line);
+                        }
+                        else
+                        {
+                            throw new FileFormatException();
                         }
                     }
                 }
             }
-        }
 
-        // recepies.last
-        //.add
+            _recipes = recipes.OrderBy(r => r.Name ).ToList();
+
+            IsModified = false;
+
+            OnRecipesChanged(EventArgs.Empty);
+        }
         public void Save()
         {
 
