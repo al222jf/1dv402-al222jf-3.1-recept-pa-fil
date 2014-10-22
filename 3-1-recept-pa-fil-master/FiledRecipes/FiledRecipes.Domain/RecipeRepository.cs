@@ -129,7 +129,8 @@ namespace FiledRecipes.Domain
         }
         public void Load()
         {
-            
+            Recipe allRecepies = null;
+
             List<IRecipe> recipes = new List<IRecipe>();
 
             RecipeReadStatus readStatus = new RecipeReadStatus();
@@ -151,9 +152,39 @@ namespace FiledRecipes.Domain
                     {
                         readStatus = RecipeReadStatus.Instruction;
                     }
+                    else 
+                    {
+                        if (readStatus == RecipeReadStatus.New)
+                        {
+                            allRecepies = new Recipe(line);
+                            recipes.Add(allRecepies);
+                        }
+                        else if (readStatus == RecipeReadStatus.Ingredient)
+                        {
+                            string[] ingredients = line.Split(new string[] { "," }, StringSplitOptions.None);
+
+                            if (ingredients.Length % 3 != 0)
+                            {
+                                throw new FileFormatException();
+                            }
+
+                            Ingredient ingredient = new Ingredient();
+                            ingredient.Amount = ingredients[0];
+                            ingredient.Measure = ingredients[1];
+                            ingredient.Name = ingredients[2];
+                            
+                        }
+                        else if (readStatus == RecipeReadStatus.Instruction)
+                        {
+                            //allRecepies.Add(line);
+                        }
+                    }
                 }
             }
         }
+
+        // recepies.last
+        //.add
         public void Save()
         {
 
