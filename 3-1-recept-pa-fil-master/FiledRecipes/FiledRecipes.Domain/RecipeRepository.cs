@@ -131,8 +131,10 @@ namespace FiledRecipes.Domain
         {
             Recipe recipe = null;
 
+            //Lista för alla recept.
             List<IRecipe> recipes = new List<IRecipe>();
 
+            //enum för dom olika typerna som finns i ett recept.
             RecipeReadStatus readStatus = RecipeReadStatus.Indefinite;
 
             using (StreamReader reader = new StreamReader(_path))
@@ -167,7 +169,7 @@ namespace FiledRecipes.Domain
                             {
                                 throw new FileFormatException();
                             }
-
+                             
                             Ingredient ingredient = new Ingredient();
                             ingredient.Amount = ingredients[0];
                             ingredient.Measure = ingredients[1];
@@ -195,7 +197,15 @@ namespace FiledRecipes.Domain
         }
         public void Save()
         {
+            using (StreamWriter writer = new StreamWriter(_path))
+            {
+                foreach (IRecipe recipes in _recipes)
+                {
+                    Console.WriteLine(SectionRecipe);
+                    Console.WriteLine(recipes.Name);
+                }
 
+            }
         }
     }
 }
