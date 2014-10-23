@@ -201,11 +201,26 @@ namespace FiledRecipes.Domain
             {
                 foreach (IRecipe recipes in _recipes)
                 {
-                    Console.WriteLine(SectionRecipe);
-                    Console.WriteLine(recipes.Name);
-                }
+                    writer.WriteLine(SectionRecipe);
+                    writer.WriteLine(recipes.Name);
 
+                    writer.WriteLine(SectionIngredients);
+
+                    foreach (IIngredient ingredients in recipes.Ingredients)
+                    {
+                        writer.WriteLine("{0};{1};{2}", ingredients.Amount, ingredients.Measure, ingredients.Name);
+                    }
+
+                    writer.WriteLine(SectionInstructions);
+
+                    foreach (string instructions in recipes.Instructions)
+                    {
+                        writer.WriteLine(instructions);
+                    }
+                }
             }
+
+            IsModified = true;
         }
     }
 }
