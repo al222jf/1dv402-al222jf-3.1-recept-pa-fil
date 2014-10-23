@@ -137,11 +137,13 @@ namespace FiledRecipes.Domain
             //enum för dom olika typerna som finns i ett recept.
             RecipeReadStatus readStatus = RecipeReadStatus.Indefinite;
 
+            //Läser in text filen.
             using (StreamReader reader = new StreamReader(_path))
             {
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
+                    //Kollar vilken section man är på och sätter statusen efter det.
                     if (line == SectionRecipe)
                     {
                         readStatus = RecipeReadStatus.New;
@@ -158,6 +160,7 @@ namespace FiledRecipes.Domain
                     {
                         if (readStatus == RecipeReadStatus.New)
                         {
+                            //Lägger till ett nytt recept i listan.
                             recipe = new Recipe(line);
                             recipes.Add(recipe);
                         }
@@ -170,15 +173,19 @@ namespace FiledRecipes.Domain
                                 throw new FileFormatException();
                             }
                              
+                            //Lägger in alla delar av ingredienserna i arrayen.
                             Ingredient ingredient = new Ingredient();
                             ingredient.Amount = ingredients[0];
                             ingredient.Measure = ingredients[1];
                             ingredient.Name = ingredients[2];
+
+                            //lägger till ingrediens arrayen till receptet.
                             recipe.Add(ingredient);
                             
                         }
                         else if (readStatus == RecipeReadStatus.Instruction)
                         {
+                            //Lägger till intruktionerna
                             recipe.Add(line);
                         }
                         else
@@ -189,6 +196,7 @@ namespace FiledRecipes.Domain
                 }
             }
 
+            //Sorterar recepten efter namnen,
             _recipes = recipes.OrderBy(r => r.Name ).ToList();
 
             IsModified = false;
@@ -219,8 +227,6 @@ namespace FiledRecipes.Domain
                     }
                 }
             }
-
-            IsModified = true;
         }
     }
 }
